@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stop Online</title>
+    <link rel="icon" type="image/png" href="/assets/stop-time-icon.png" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <button id="leaveRoomBtn" class="btn-sair hidden" type="button">
+        SAIR <strong style="font-size: 1.2em; line-height: 1;">✖</strong>
+      </button>
+
+      <div id="connectionStatus" class="connection-status hidden" role="status" aria-live="polite"></div>
+      <section id="entryView" class="view active">
+        <article class="card centered-card entry-card">
+          <div class="entry-logo">
+            <img class="stop-time-icon" src="/assets/stop-time-icon.png" alt="Stop Online" />
+          </div>
+          <p class="entry-subtitle">Crie sua sala, desafie seus amigos e mostre quem manda nas letras!</p>
+
+          <label class="entry-name">
+            <span>Seu nome</span>
+            <input id="playerName" placeholder="Ex.: Maria" />
+          </label>
+
+          <div class="entry-actions">
+            <button id="createRoomBtn">Criar sala</button>
+          </div>
+
+          <div class="entry-divider"><span>ou</span></div>
+
+          <div class="join-row">
+            <input id="roomCodeInput" placeholder="Código da sala" maxlength="6" />
+            <button id="joinRoomBtn" class="secondary">Entrar</button>
+          </div>
+
+          <div class="entry-qr-card">
+            <span>Entrar pelo celular</span>
+            <img id="roomQrCode" alt="QR Code para entrar na sala pelo celular" />
+            <small id="roomQrHint">Digite um código de sala para gerar o QR Code.</small>
+          </div>
+        </article>
+      </section>
+
+      <section id="lobbyView" class="view">
+        <article class="card lobby-main-card">
+          <header class="lobby-header">
+            <img class="lobby-logo" src="/assets/stop-time-icon.png" alt="Stop Online" />
+            <div class="room-code">
+              <span>Código</span>
+              <strong id="lobbyRoomCode">-</strong>
+              <button id="copyRoomCodeBtn" type="button" aria-label="Copiar código da sala" title="Copiar código">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M8 8h10v12H8z" />
+                  <path d="M6 16H4V4h12v2" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          <div class="lobby-board">
+            <aside class="lobby-info-panel">
+              <div class="field-header">
+                <span>Sala</span>
+                <small>Configuração atual</small>
+              </div>
+
+              <div class="lobby-stat-grid">
+                <div class="lobby-stat">
+                  <span>Rodada</span>
+                  <strong id="lobbyRoundNumber">1</strong>
+                </div>
+                <div class="lobby-stat">
+                  <span>Jogadores</span>
+                  <strong id="lobbyPlayerCount">0</strong>
+                </div>
+              </div>
+
+              <label class="lobby-rounds-field">
+                <span>Rodadas</span>
+                <select id="maxRoundsInput">
+                  <option value="6">6 rodadas</option>
+                  <option value="7">7 rodadas</option>
+                  <option value="8">8 rodadas</option>
+                  <option value="9">9 rodadas</option>
+                  <option value="10">10 rodadas</option>
+                  <option value="11">11 rodadas</option>
+                  <option value="12">12 rodadas</option>
+                  <option value="13">13 rodadas</option>
+                  <option value="14">14 rodadas</option>
+                  <option value="15">15 rodadas</option>
+                </select>
+              </label>
+
+              <label class="lobby-rounds-field">
+                <span>Minutos</span>
+                <select id="roundDurationInput">
+                  <option value="60">1 minuto</option>
+                  <option value="120" selected>2 minutos</option>
+                  <option value="180">3 minutos</option>
+                  <option value="240">4 minutos</option>
+                  <option value="300">5 minutos</option>
+                  <option value="360">6 minutos</option>
+                  <option value="420">7 minutos</option>
+                  <option value="480">8 minutos</option>
+                  <option value="540">9 minutos</option>
+                  <option value="600">10 minutos</option>
+                </select>
+              </label>
+
+              <div class="lobby-players-card">
+                <h2>Jogadores</h2>
+                <div id="lobbyPlayersList" class="players"></div>
+              </div>
+            </aside>
+
+            <section class="lobby-config-card themes-card">
+              <div class="field-header">
+                <span>Lista de temas</span>
+                <small id="categoriesLimit">6/20 temas</small>
+              </div>
+              <div id="categoriesChips" class="chips"></div>
+              <div class="chip-add">
+                <input id="categoryInput" placeholder="Adicionar tema" />
+                <button id="addCategoryBtn" class="secondary" type="button">Add</button>
+              </div>
+              <small id="categoryFeedback" class="category-feedback" aria-live="polite"></small>
+            </section>
+
+            <section class="lobby-config-card letters-card">
+              <div class="field-header">
+                <span>Letras</span>
+                <small>Clique para ativar ou desativar</small>
+              </div>
+              <div id="lettersChips" class="chips compact"></div>
+              <small id="letterFeedback" class="letter-feedback" aria-live="polite"></small>
+            </section>
+          </div>
+
+          <footer class="lobby-start-card">
+            <button id="startRoundBtn">Começar rodada</button>
+          </footer>
+        </article>
+      </section>
+
+      <section id="roundView" class="view">
+        <aside class="game-panel participants-panel">
+          <h2>Participantes</h2>
+          <div class="participantsList participants-list"></div>
+        </aside>
+
+        <article class="card round-card game-center">
+          <div class="game-topbar">
+            <span>Rodada <b id="roundCounter">1</b></span>
+            <div class="letter-badge">
+              <small>Letra</small>
+              <strong id="currentLetter">-</strong>
+            </div>
+          </div>
+          <div class="round-header">
+            <div class="timer">
+              <div class="timer-bar" aria-label="Tempo restante">
+                <span id="roundTimer"></span>
+              </div>
+            </div>
+            <button id="stopBtn" class="danger">STOP!</button>
+          </div>
+          <form id="answersForm" class="answers"></form>
+        </article>
+
+        <aside class="game-panel chat-panel">
+          <h2>Eventos</h2>
+          <div class="log-tabs" role="tablist" aria-label="Filtrar eventos">
+            <button class="logFilter active" type="button" data-filter="all">Todos</button>
+            <button class="logFilter" type="button" data-filter="system">Sistema</button>
+            <button class="logFilter" type="button" data-filter="chat">Chat</button>
+          </div>
+          <div class="activityLog activity-log"></div>
+          <form class="chatForm chat-form">
+            <input class="chatInput" placeholder="Converse aqui..." maxlength="180" />
+            <button type="submit">Enviar</button>
+          </form>
+        </aside>
+      </section>
+
+      <section id="reviewView" class="view">
+        <aside class="game-panel participants-panel">
+          <h2>Participantes</h2>
+          <div class="participantsList participants-list"></div>
+        </aside>
+
+        <article class="card game-center">
+          <div class="game-topbar">
+            <span>Conferência</span>
+            <div class="letter-badge">
+              <small>Letra</small>
+              <strong class="reviewLetter">-</strong>
+            </div>
+          </div>
+          <div class="review-content">
+            <h2>Conferência por categoria</h2>
+            <div class="review-header">
+              <strong id="reviewCategoryTitle">Categoria</strong>
+              <span class="review-timer">Próxima em <b id="reviewTimer">20s</b></span>
+            </div>
+            <div id="votesPanel" class="votes"></div>
+          </div>
+        </article>
+
+        <aside class="game-panel chat-panel">
+          <h2>Eventos</h2>
+          <div class="log-tabs" role="tablist" aria-label="Filtrar eventos">
+            <button class="logFilter active" type="button" data-filter="all">Todos</button>
+            <button class="logFilter" type="button" data-filter="system">Sistema</button>
+            <button class="logFilter" type="button" data-filter="chat">Chat</button>
+          </div>
+          <div class="activityLog activity-log"></div>
+          <form class="chatForm chat-form">
+            <input class="chatInput" placeholder="Converse aqui..." maxlength="180" />
+            <button type="submit">Enviar</button>
+          </form>
+        </aside>
+      </section>
+
+      <section id="podiumView" class="view">
+        <article class="card podium-card">
+          <p class="step">Etapa 6</p>
+          <h2 id="podiumTitle">Pódio da rodada</h2>
+          <p id="podiumSubtitle" class="podium-subtitle">Confira a pontuação e escolha o próximo passo.</p>
+          <div id="podiumSummary" class="podium-summary"></div>
+          <div id="podiumList" class="podium"></div>
+          <div class="podium-actions">
+            <button id="newRoundBtn">Nova rodada</button>
+            <button id="shareResultBtn" class="secondary" type="button">Compartilhar resultado</button>
+            <button id="playAgainBtn" class="secondary" type="button">Jogar novamente</button>
+            <button id="backToStartBtn" class="secondary" type="button">Voltar ao início</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="demoView" class="view">
+        <article class="card demo-card">
+          <p class="step">Modo apresentação</p>
+          <h2>Arquitetura do Stop Online</h2>
+          <p class="podium-subtitle">Fluxo usado na defesa: API FastAPI centraliza regras, Redis compartilha estado, RabbitMQ audita eventos e WebSocket atualiza os jogadores em tempo real.</p>
+          <div class="demo-grid">
+            <section>
+              <strong>Redis / cache</strong>
+              <p>As salas ficam em chaves <code>stop:room:{id}</code>. A API tenta cache primeiro, registra hit/miss/erro e usa origem em memória como fallback quando configurado.</p>
+            </section>
+            <section>
+              <strong>RabbitMQ</strong>
+              <p>Eventos <code>room.*</code> são publicados em tópico e consumidos pela fila de auditoria <code>stop.events.audit</code>.</p>
+            </section>
+            <section>
+              <strong>WebSocket</strong>
+              <p>Cada mudança relevante dispara broadcast para os sockets conectados e mantém lobby, rodada, votação e pódio sincronizados.</p>
+            </section>
+            <section>
+              <strong>Fluxo da aplicação</strong>
+              <p>Criar sala, entrar jogadores, configurar temas/letras, iniciar rodada, enviar respostas, pedir STOP, votar, calcular pontuação e declarar vencedor.</p>
+            </section>
+          </div>
+          <div class="podium-actions">
+            <button id="demoBackBtn" type="button">Abrir jogo</button>
+          </div>
+        </article>
+      </section>
+
+      <div id="stopModal" class="modal hidden">
+        <div class="modal-content">
+          <span>Etapa 4</span>
+          <strong>STOP!</strong>
+          <p id="stopMessage">Todos devem parar de escrever.</p>
+          <button id="closeStopModalBtn">Ver respostas</button>
+        </div>
+      </div>
+
+      <div id="leaveRoomModal" class="modal hidden">
+        <div class="modal-content confirm-modal-content">
+          <span>Sair da sala</span>
+          <p>Tem certeza que deseja sair desta sala?</p>
+          <div class="modal-actions">
+            <button id="cancelLeaveRoomBtn" class="secondary" type="button">Cancelar</button>
+            <button id="confirmLeaveRoomBtn" type="button">Sair da sala</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite">
+        <div class="loading-content">
+          <span class="loading-spinner" aria-hidden="true"></span>
+          <strong id="loadingMessage">Carregando...</strong>
+        </div>
+      </div>
+
+      <button id="devOpsToggle" class="devops-toggle hidden" type="button" aria-expanded="false">
+        DSM / Cache
+      </button>
+
+      <aside id="devOpsPanel" class="devops-panel hidden" aria-live="polite">
+        <header>
+          <span>DSM / Cache</span>
+          <button id="devOpsCloseBtn" class="devops-close" type="button" aria-label="Fechar painel DSM">×</button>
+          <strong id="devDsmStatus">-</strong>
+        </header>
+        <div class="devops-grid">
+          <div>
+            <small>Redis</small>
+            <b id="devRedisStatus">-</b>
+          </div>
+          <div>
+            <small>Latência</small>
+            <b id="devRedisLatency">-</b>
+          </div>
+          <div>
+            <small>Última leitura</small>
+            <b id="devCacheState">-</b>
+          </div>
+          <div>
+            <small>Operacoes</small>
+            <b id="devOpsCount">0</b>
+          </div>
+        </div>
+        <div class="devops-actions">
+          <button id="devRefreshBtn" class="secondary" type="button">Atualizar</button>
+          <button id="devCopyDiagnosticsBtn" class="secondary" type="button">Copiar diagnóstico</button>
+          <button id="devForceMissBtn" class="secondary" type="button">Forçar miss</button>
+          <button id="devClearCacheBtn" class="danger" type="button">Limpar cache</button>
+        </div>
+        <div id="devDiagnostics" class="devops-diagnostics"></div>
+        <div id="devEvents" class="devops-events"></div>
+      </aside>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

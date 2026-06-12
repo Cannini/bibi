@@ -1,0 +1,261 @@
+:root {
+  color-scheme: light;
+  --background: #062b73;
+  --surface: rgb(7 35 96 / 88%);
+  --surface-muted: rgb(23 86 170 / 38%);
+  --text: #ffffff;
+  --muted: #b9d7ff;
+  --line: rgb(94 170 255 / 45%);
+  --accent: #ffd23f;
+  --accent-2: #109e42;
+  --primary: #1d9bf0;
+  --danger: #ff3b6b;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 20%, rgb(0 132 255 / 42%), transparent 22rem),
+    radial-gradient(circle at 82% 12%, rgb(35 219 190 / 18%), transparent 18rem),
+    radial-gradient(circle at 55% 90%, rgb(24 119 242 / 28%), transparent 24rem),
+    linear-gradient(135deg, #063b95 0%, #041f5f 45%, #02091f 100%),
+    var(--background);
+  color: var(--text);
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  color: rgb(255 255 255 / 6%);
+  content: "A B C D E F G H I J K L M N O P Q R S T U V";
+  font-size: 1.6rem;
+  font-weight: 900;
+  inset: 0;
+  letter-spacing: 1.8rem;
+  line-height: 4rem;
+  pointer-events: none;
+  position: fixed;
+  rotate: -14deg;
+  text-transform: uppercase;
+  word-spacing: 2rem;
+  z-index: -1;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 999px;
+  background: #ffbb00;
+  box-shadow: 0 10px 28px #ecb7453f;
+  color: #041f5f;
+  cursor: pointer;
+  font-weight: 750;
+  padding: 0.85rem 1.15rem;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+}
+
+button:hover {
+  background: #bb8900;
+  color: #041f5f;
+  transform: translateY(-1px);
+}
+
+button:active {
+  background: #bb8900;
+  color: #041f5f;
+  transform: translateY(0);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+button:disabled:hover {
+  background: #ffae00;
+  color: #041f5f;
+  transform: none;
+}
+
+button.secondary {
+  background: #ffbb00;
+  border-color: rgb(255 255 255 / 15%);
+  box-shadow: 0 10px 28px #ecb7453f;
+  color: #041f5f;
+}
+
+button.secondary:hover {
+  background: #bb8900;
+  color: #041f5f;
+}
+
+button.danger {
+  background: #fed402;
+  border-color: rgb(255 255 255 / 20%);
+  color: #2b144d;
+  font-size: 1.1rem;
+}
+
+input,
+textarea {
+  background: rgb(6 31 84 / 74%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  margin-top: 0.4rem;
+  padding: 0.95rem 1rem;
+  width: 100%;
+}
+
+textarea {
+  resize: none;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  outline: 3px solid rgb(255 210 63 / 18%);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(203 188 255 / 62%);
+}
+
+label {
+  color: var(--muted);
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 650;
+  margin-top: 1rem;
+}
+
+.app {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.view.active#roundView,
+.view.active#reviewView,
+.view.active#podiumView {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.centered-card {
+  justify-self: center;
+  max-width: 640px;
+  width: 100%;
+}
+
+.card {
+  background:
+    linear-gradient(135deg, rgb(9 54 135 / 88%), rgb(2 20 65 / 92%)),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 6%),
+    0 0 0 1px rgb(40 134 255 / 22%),
+    0 16px 52px rgb(0 0 0 / 22%),
+    0 0 32px rgb(29 155 240 / 24%);
+  padding: 1.4rem;
+}
+
+.card h2 {
+  font-size: 1.45rem;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+}
+
+.step {
+  background: linear-gradient(90deg, #1d9bf0, #0f5fc4);
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  margin: 0 0 0.7rem;
+  padding: 0.35rem 0.7rem;
+  text-transform: uppercase;
+}
+
+.actions {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 1rem;
+}
+
+.actions.single-action {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hint {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* =========================================
+   NOVO BOTÃO GLOBAL DE SAIR 
+   ========================================= */
+.btn-sair {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background-color: #d1d0f5; 
+  border: 3px solid #4a478c; 
+  color: #3b3670;
+  font-size: 16px;
+  font-weight: 900;
+  font-family: Arial, sans-serif;
+  padding: 8px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999; 
+  box-shadow: 0 4px 0 #4a478c; 
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-sair:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #4a478c;
+}
+
+.btn-sair.hidden {
+  display: none !important;
+}
